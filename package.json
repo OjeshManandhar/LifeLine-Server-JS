@@ -13,5 +13,8 @@
     "REST"
   ],
   "author": "Ojesh Manandhar",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
