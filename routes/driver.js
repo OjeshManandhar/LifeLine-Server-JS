@@ -8,6 +8,7 @@ const driverController = require('./../controllers/driver');
 const router = express.Router();
 
 // GET
+router.get('/driver', driverController.get.all);
 
 // POST
 router.post(

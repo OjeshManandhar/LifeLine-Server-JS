@@ -5,7 +5,18 @@ const { validationResult } = require('express-validator');
 // model
 const { Driver } = require('./../models');
 
-module.exports.get = {};
+module.exports.get = {
+  all: (req, res, next) => {
+    Driver.findAll({
+      attributes: ['name', 'driver_id', 'email', 'contact', 'role']
+    })
+      .then(drivers => res.json(drivers.map(d => d.toJSON())))
+      .catch(err => {
+        console.log('Get all drivers error', err);
+        res.status(500).json({ err: 'Some error occured' });
+      });
+  }
+};
 
 module.exports.post = {
   signup: (req, res, next) => {
@@ -54,23 +65,20 @@ module.exports.post = {
     };
 
     if (!auth.contact || !auth.password) {
-      res
+      return res
         .setHeader('WWW-Authenticate', 'Basic')
         .status(401)
         .json({ err: 'Login credentials missing' });
-      return;
     }
 
     if (!auth.contact.match(/^\d{10}$/)) {
-      res
+      return res
         .status(401)
         .send('Phone number must be numbers only and have 10 characters');
-      return;
     }
 
     if (auth.password.length < 8) {
-      res.status(401).send('Password must be at least 8 characters');
-      return;
+      return res.status(401).send('Password must be at least 8 characters');
     }
 
     Driver.findOne({
@@ -89,13 +97,13 @@ module.exports.post = {
           .compare(auth.password, driver.password)
           .then(success => {
             if (success) {
-              res.status(200).json({
+              return res.status(200).json({
                 token: 'just a token'
               });
-              return;
             } else {
-              res.status(401).send('Phone number and Password does not match');
-              return;
+              return res
+                .status(401)
+                .send('Phone number and Password does not match');
             }
           })
           .catch(err => {
