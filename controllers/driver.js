@@ -36,6 +36,14 @@ module.exports.get = {
         res.json({ driver: driver.toJSON() });
       })
       .catch(next);
+  },
+
+  pic: (req, res, next) => {
+    res.send(req.url);
+  },
+
+  smallPic: (req, res, next) => {
+    res.send(req.url);
   }
 };
 
@@ -128,7 +136,11 @@ module.exports.post = {
       .catch(next);
   },
 
-  tokenCheck: (req, res, next) => {
+  checkToken: (req, res, next) => {
+    res.send(req.url);
+  },
+
+  updatePic: (req, res, next) => {
     res.send(req.url);
   }
 };
@@ -176,6 +188,7 @@ module.exports.put = {
       })
       .catch(next);
   },
+
   updatePassword: (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

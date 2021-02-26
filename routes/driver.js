@@ -9,6 +9,7 @@ const router = express.Router();
 
 // GET
 router.get('/driver', driverController.get.all);
+
 router.get(
   '/driver/:contact',
   [
@@ -24,6 +25,40 @@ router.get(
       })
   ],
   driverController.get.single
+);
+
+router.get(
+  '/driver_pic/:contact',
+  [
+    param('contact')
+      .trim()
+      .isNumeric()
+      .withMessage('Contact must be numbers only')
+      .custom(value => {
+        if (value.length !== 10) {
+          throw new Error('Contact must have 10 characters');
+        }
+        return true;
+      })
+  ],
+  driverController.get.pic
+);
+
+router.get(
+  '/driver_small_pic/:contact',
+  [
+    param('contact')
+      .trim()
+      .isNumeric()
+      .withMessage('Contact must be numbers only')
+      .custom(value => {
+        if (value.length !== 10) {
+          throw new Error('Contact must have 10 characters');
+        }
+        return true;
+      })
+  ],
+  driverController.get.smallPic
 );
 
 // POST
@@ -55,6 +90,25 @@ router.post(
 );
 
 router.post('/driver_login', driverController.post.login);
+
+reouter.post('/driver_check_token', driverController.post.checkToken);
+
+router.get(
+  '/update_driver_pic/:contact',
+  [
+    param('contact')
+      .trim()
+      .isNumeric()
+      .withMessage('Contact must be numbers only')
+      .custom(value => {
+        if (value.length !== 10) {
+          throw new Error('Contact must have 10 characters');
+        }
+        return true;
+      })
+  ],
+  driverController.post.updatePic
+);
 
 // PUT
 router.put(
