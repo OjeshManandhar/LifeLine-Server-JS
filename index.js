@@ -11,6 +11,7 @@ const initModels = require('./database/initModels');
 
 // routers
 const driverRouter = require('./routes/driver');
+const trafficRoutes = require('./routes/traffic');
 
 const app = express();
 
@@ -27,7 +28,9 @@ app.use((req, res, next) => {
 
 // Routers
 app.use(driverRouter);
+app.use(trafficRoutes);
 
+// 404
 app.use((req, res, next) => res.status(404).json({ err: 'Path not found' }));
 
 // Error handling middleware
