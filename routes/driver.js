@@ -1,4 +1,4 @@
-/ packages
+// packages
 const express = require('express');
 
 // controllers
@@ -10,7 +10,6 @@ const router = express.Router();
 
 // POST
 router.post('/driver_signup', driverController.post.signup);
-
 
 // PUT
 

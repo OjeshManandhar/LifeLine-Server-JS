@@ -1,5 +1,5 @@
 // packages
-// const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
 // model
 const { Driver } = require('./../models');
@@ -9,6 +9,33 @@ module.exports.get = {};
 module.exports.post = {
   signup: (req, res, next) => {
     console.log('Driver Signup');
+
+    const { name, driver_id, email, contact, password } = req.body;
+
+    bcrypt
+      .hash(password, 12)
+      .then(hashedPassword =>
+        Driver.create({
+          name,
+          driver_id,
+          email,
+          contact,
+          password: hashedPassword
+        })
+      )
+      .then(driver =>
+        res.status(201).json({
+          name: driver.name,
+          driver_id: driver.driver_id,
+          email: driver.email,
+          contact: driver.contact,
+          role: driver.role
+        })
+      )
+      .catch(err => {
+        console.log('Create driver err:', err);
+        res.status(422).json({ err: err.errors[0].message });
+      });
   },
 
   login: (req, res, next) => {
