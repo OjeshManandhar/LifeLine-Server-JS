@@ -24,9 +24,13 @@ const Traffic = sequelize.define('traffics', {
     unique: true
   },
   contact: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING(11),
     allowNull: false,
-    unique: true
+    unique: true,
+    validate: {
+      isNumeric: true,
+      len: 10
+    }
   },
   password: {
     // hashed password will be saved
