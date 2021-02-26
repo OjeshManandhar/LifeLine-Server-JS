@@ -10,6 +10,7 @@ const router = express.Router();
 
 // POST
 router.post('/driver_signup', driverController.post.signup);
+router.post('/driver_login', driverController.post.login);
 
 // PUT
 

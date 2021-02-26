@@ -8,8 +8,6 @@ module.exports.get = {};
 
 module.exports.post = {
   signup: (req, res, next) => {
-    console.log('Driver Signup');
-
     const { name, driver_id, email, contact, password } = req.body;
 
     bcrypt
@@ -39,6 +37,11 @@ module.exports.post = {
   },
 
   login: (req, res, next) => {
+    console.log('Driver Login');
+
+    console.log(req.headers.authorization);
+    console.log(req.get('authorization'));
+
     res.send(req.url);
   },
 
