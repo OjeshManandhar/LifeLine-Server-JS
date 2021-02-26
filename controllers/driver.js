@@ -13,7 +13,6 @@ module.exports.post = {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log('validation errors:', errors.array());
       return res.status(400).json({ err: errors.array()[0].msg });
     }
 
@@ -44,12 +43,70 @@ module.exports.post = {
   },
 
   login: (req, res, next) => {
-    console.log('Driver Login');
+    const encodedAuth = req.get('authorization');
+    const decodedAuth = Buffer.from(
+      encodedAuth.split(' ')[1],
+      'base64'
+    ).toString();
+    const auth = {
+      contact: decodedAuth.split(':')[0],
+      password: decodedAuth.split(':')[1]
+    };
 
-    console.log(req.headers.authorization);
-    console.log(req.get('authorization'));
+    if (!auth.contact || !auth.password) {
+      res
+        .setHeader('WWW-Authenticate', 'Basic')
+        .status(401)
+        .json({ err: 'Login credentials missing' });
+      return;
+    }
 
-    res.send(req.url);
+    if (!auth.contact.match(/^\d{10}$/)) {
+      res
+        .status(401)
+        .send('Phone number must be numbers only and have 10 characters');
+      return;
+    }
+
+    if (auth.password.length < 8) {
+      res.status(401).send('Password must be at least 8 characters');
+      return;
+    }
+
+    Driver.findOne({
+      where: {
+        contact: auth.contact
+      }
+    })
+      .then(_driver => {
+        if (!_driver) {
+          res.status(401).send('Phone number is not registered');
+          return;
+        }
+        const driver = _driver.toJSON();
+
+        bcrypt
+          .compare(auth.password, driver.password)
+          .then(success => {
+            if (success) {
+              res.status(200).json({
+                token: 'just a token'
+              });
+              return;
+            } else {
+              res.status(401).send('Phone number and Password does not match');
+              return;
+            }
+          })
+          .catch(err => {
+            console.log('Password compare error:', err);
+            res.status(500).json({ err: 'Some error occured' });
+          });
+      })
+      .catch(err => {
+        console.log('Login error:', err);
+        res.status(500).json({ err: 'Some error occured' });
+      });
   },
 
   tokenCheck: (req, res, next) => {

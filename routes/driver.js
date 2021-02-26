@@ -36,6 +36,7 @@ router.post(
   ],
   driverController.post.signup
 );
+
 router.post('/driver_login', driverController.post.login);
 
 // PUT
