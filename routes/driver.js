@@ -1,6 +1,6 @@
 // packages
 const express = require('express');
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 
 // controllers
 const driverController = require('./../controllers/driver');
@@ -9,6 +9,22 @@ const router = express.Router();
 
 // GET
 router.get('/driver', driverController.get.all);
+router.get(
+  '/driver/:contact',
+  [
+    param('contact')
+      .trim()
+      .isNumeric()
+      .withMessage('Contact must be only numbers')
+      .custom(value => {
+        if (value.length !== 10) {
+          throw new Error('Contact must have 10 characters');
+        }
+        return true;
+      })
+  ],
+  driverController.get.single
+);
 
 // POST
 router.post(
@@ -23,7 +39,7 @@ router.post(
     body('contact')
       .trim()
       .isNumeric()
-      .withMessage('Contact must be only numberes')
+      .withMessage('Contact must be only numbers')
       .custom(value => {
         if (value.length !== 10) {
           throw new Error('Contact must have 10 characters');
