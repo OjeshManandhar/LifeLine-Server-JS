@@ -116,5 +116,22 @@ router.put(
 );
 
 // DELETE
+router.delete(
+  '/driver/:contact',
+  [
+    param('contact')
+      .optional()
+      .trim()
+      .isNumeric()
+      .withMessage('Contact must be numbers only')
+      .custom(value => {
+        if (value.length !== 10) {
+          throw new Error('Contact must have 10 characters');
+        }
+        return true;
+      })
+  ],
+  driverController.delete.delete
+);
 
 module.exports = router;
