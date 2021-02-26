@@ -15,7 +15,7 @@ router.get(
     param('contact')
       .trim()
       .isNumeric()
-      .withMessage('Contact must be only numbers')
+      .withMessage('Contact must be numbers only')
       .custom(value => {
         if (value.length !== 10) {
           throw new Error('Contact must have 10 characters');
@@ -39,7 +39,7 @@ router.post(
     body('contact')
       .trim()
       .isNumeric()
-      .withMessage('Contact must be only numbers')
+      .withMessage('Contact must be numbers only')
       .custom(value => {
         if (value.length !== 10) {
           throw new Error('Contact must have 10 characters');
@@ -57,6 +57,41 @@ router.post(
 router.post('/driver_login', driverController.post.login);
 
 // PUT
+router.put(
+  '/driver/:contact',
+  [
+    param('contact')
+      .optional()
+      .trim()
+      .isNumeric()
+      .withMessage('Contact must be numbers only')
+      .custom(value => {
+        if (value.length !== 10) {
+          throw new Error('Contact must have 10 characters');
+        }
+        return true;
+      }),
+    body('name')
+      .optional()
+      .trim()
+      .isLength({ min: 5 })
+      .withMessage('Name must be of at least 5 characters long'),
+    body('driver_id').optional().trim(),
+    body('email', 'Invalid email').optional().trim().normalizeEmail().isEmail(),
+    body('contact')
+      .optional()
+      .trim()
+      .isNumeric()
+      .withMessage('Contact must be numbers only')
+      .custom(value => {
+        if (value.length !== 10) {
+          throw new Error('Contact must have 10 characters');
+        }
+        return true;
+      })
+  ],
+  driverController.put.update
+);
 
 // DELETE
 
