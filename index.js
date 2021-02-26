@@ -30,6 +30,14 @@ app.use(driverRouter);
 
 app.use((req, res, next) => res.status(404).json({ err: 'Path not found' }));
 
+// Error handling middleware
+app.use((error, req, res, next) => {
+  console.log('Error handling middleware:', error, error.message);
+  res
+    .status(500)
+    .json({ err: 'Internal Server Error', message: error.message });
+});
+
 initModels();
 
 sequelize

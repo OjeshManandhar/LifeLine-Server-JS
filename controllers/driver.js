@@ -11,10 +11,7 @@ module.exports.get = {
       attributes: ['name', 'driver_id', 'email', 'contact', 'role']
     })
       .then(drivers => res.json(drivers.map(d => d.toJSON())))
-      .catch(err => {
-        console.log('Get all drivers error', err);
-        res.status(500).json({ err: 'Some error occured' });
-      });
+      .catch(next);
   },
 
   single: (req, res, next) => {
@@ -38,10 +35,7 @@ module.exports.get = {
 
         res.json({ driver: driver.toJSON() });
       })
-      .catch(err => {
-        console.log('Get driver error', err);
-        res.status(500).json({ err: 'Some error occured' });
-      });
+      .catch(next);
   }
 };
 
@@ -74,10 +68,7 @@ module.exports.post = {
           role: driver.role
         })
       )
-      .catch(err => {
-        console.log('Create driver err:', err);
-        res.status(422).json({ err: err.errors[0].message });
-      });
+      .catch(next);
   },
 
   login: (req, res, next) => {
@@ -132,15 +123,9 @@ module.exports.post = {
                 .send('Phone number and Password does not match');
             }
           })
-          .catch(err => {
-            console.log('Password compare error:', err);
-            res.status(500).json({ err: 'Some error occured' });
-          });
+          .catch(next);
       })
-      .catch(err => {
-        console.log('Login error:', err);
-        res.status(500).json({ err: 'Some error occured' });
-      });
+      .catch(next);
   },
 
   tokenCheck: (req, res, next) => {
