@@ -144,7 +144,7 @@ module.exports.put = {
 
     Driver.findOne({
       where: {
-        contact: contact
+        contact
       }
     })
       .then(driver => {
@@ -163,15 +163,55 @@ module.exports.put = {
 
         driver
           .save()
-          .then(driver => {
+          .then(driver =>
             res.status(202).json({
               name: driver.name,
               driver_id: driver.driver_id,
               email: driver.email,
               contact: driver.contact,
               role: driver.role
-            });
+            })
+          )
+          .catch(next);
+      })
+      .catch(next);
+  },
+  updatePassword: (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ err: errors.array()[0].msg });
+    }
+
+    const contact = req.params.contact;
+
+    Driver.findOne({
+      where: {
+        contact
+      }
+    })
+      .then(driver => {
+        if (!driver) {
+          return res.status(404).json({ err: 'User not found' });
+        }
+
+        const password = req.body.password;
+
+        bcrypt
+          .hash(password, 12)
+          .then(hashedPassword => {
+            driver.password = hashedPassword;
+
+            return driver.save();
           })
+          .then(driver =>
+            res.status(202).json({
+              name: driver.name,
+              driver_id: driver.driver_id,
+              email: driver.email,
+              contact: driver.contact,
+              role: driver.role
+            })
+          )
           .catch(next);
       })
       .catch(next);
