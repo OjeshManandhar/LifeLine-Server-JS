@@ -1,5 +1,6 @@
 // packages
 const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator');
 
 // model
 const { Driver } = require('./../models');
@@ -9,6 +10,12 @@ module.exports.get = {};
 module.exports.post = {
   signup: (req, res, next) => {
     const { name, driver_id, email, contact, password } = req.body;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log('validation errors:', errors.array());
+      return res.status(400).json({ err: errors.array()[0].msg });
+    }
 
     bcrypt
       .hash(password, 12)
