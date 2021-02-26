@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 
 // database
 const { sequelize } = require('./database');
+const initModels = require('./database/initModels');
 
 const app = express();
 
@@ -14,6 +15,8 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use((req, res, next) => res.send(req.url));
+
+initModels();
 
 sequelize
   .sync()

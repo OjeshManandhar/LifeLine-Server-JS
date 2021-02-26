@@ -1,7 +1,10 @@
-// database
-const { sequelize, DataTypes } = require('./../database');
+// packages
+const { DataTypes, Sequelize } = require('sequelize');
 
-const Traffic = sequelize.define('drivers', {
+// database
+const { sequelize } = require('./../database');
+
+const Traffic = sequelize.define('traffics', {
   tid: {
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,

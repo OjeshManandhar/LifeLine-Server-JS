@@ -1,5 +1,8 @@
+// packages
+const { DataTypes, Sequelize } = require('sequelize');
+
 // database
-const { sequelize, DataTypes } = require('./../database');
+const { sequelize } = require('./../database');
 
 const Driver = sequelize.define('drivers', {
   did: {
