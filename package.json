@@ -1,5 +1,5 @@
 {
-  "name": "lifeline-serve-js",
+  "name": "lifeline-server-js",
   "version": "1.0.0",
   "description": "JS Server for RATS",
   "main": "index.js",
