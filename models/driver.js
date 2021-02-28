@@ -45,8 +45,8 @@ const Driver = sequelize.define('drivers', {
       min: 50
     }
   },
-  pic_location: {
-    type: DataTypes.STRING
+  picture: {
+    type: DataTypes.BLOB('long')
   },
   role: {
     type: DataTypes.STRING(10),
