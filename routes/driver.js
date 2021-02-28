@@ -93,8 +93,8 @@ router.post('/driver_login', driverController.post.login);
 
 router.post('/driver_check_token', driverController.post.checkToken);
 
-router.get(
-  '/update_driver_pic/:contact',
+router.post(
+  '/driver_pic/:contact',
   [
     param('contact')
       .trim()
