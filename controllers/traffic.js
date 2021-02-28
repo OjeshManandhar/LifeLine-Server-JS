@@ -1,5 +1,6 @@
 // packages
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 
 // model
@@ -113,12 +114,21 @@ module.exports.post = {
           .compare(auth.password, traffic.password)
           .then(success => {
             if (success) {
-              return res.status(200).json({
-                token: 'just a token',
-                contact: traffic.contact,
-                name: traffic.name,
-                roie: traffic.role
-              });
+              jwt.sign(
+                { id: traffic.contact, role: traffic.role },
+                process.env.JWT_SECRET,
+                { expiresIn: '2d' },
+                (err, token) => {
+                  if (err) return next(err);
+
+                  res.status(200).json({
+                    token,
+                    contact: traffic.contact,
+                    name: traffic.name,
+                    roie: traffic.role
+                  });
+                }
+              );
             } else {
               return res
                 .status(401)
@@ -131,7 +141,30 @@ module.exports.post = {
   },
 
   tokenCheck: (req, res, next) => {
-    res.send(req.url);
+    const token = req.headers['x-access-token'];
+
+    if (!token) {
+      return res.status(401).json({ err: 'Token not found' });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ err: 'Token expired' });
+      }
+
+      jwt.sign(
+        { id: decoded.contact, role: decoded.contact },
+        process.env.JWT_SECRET,
+        { expiresIn: '2d' },
+        (err, token) => {
+          if (err) return next(err);
+
+          res.status(200).json({
+            newToken: token
+          });
+        }
+      );
+    });
   }
 };
 
@@ -176,6 +209,7 @@ module.exports.put = {
       })
       .catch(next);
   },
+
   updatePassword: (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
