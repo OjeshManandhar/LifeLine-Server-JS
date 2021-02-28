@@ -80,7 +80,7 @@ module.exports.post = {
   },
 
   login: (req, res, next) => {
-    const encodedAuth = req.get('authorization');
+    const encodedAuth = req.get('Authorization');
     const decodedAuth = Buffer.from(
       encodedAuth.split(' ')[1],
       'base64'
@@ -123,7 +123,10 @@ module.exports.post = {
           .then(success => {
             if (success) {
               return res.status(200).json({
-                token: 'just a token'
+                token: 'just a token',
+                contact: driver.contact,
+                name: driver.name,
+                roie: driver.role
               });
             } else {
               return res

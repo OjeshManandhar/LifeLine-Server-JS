@@ -114,7 +114,10 @@ module.exports.post = {
           .then(success => {
             if (success) {
               return res.status(200).json({
-                token: 'just a token'
+                token: 'just a token',
+                contact: traffic.contact,
+                name: traffic.name,
+                roie: traffic.role
               });
             } else {
               return res
