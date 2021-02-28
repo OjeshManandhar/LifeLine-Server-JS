@@ -91,7 +91,7 @@ router.post(
 
 router.post('/driver_login', driverController.post.login);
 
-reouter.post('/driver_check_token', driverController.post.checkToken);
+router.post('/driver_check_token', driverController.post.checkToken);
 
 router.get(
   '/update_driver_pic/:contact',
