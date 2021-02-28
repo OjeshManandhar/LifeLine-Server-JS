@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 // packages
+const Jimp = require('jimp');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
@@ -58,13 +59,48 @@ module.exports.get = {
         }
 
         const image = driver.picture;
-        res.status(200).send(image);
+
+        if (image) {
+          res.status(200).send(image);
+        } else {
+          res.status(404).json({ err: 'Image not found' });
+        }
       })
       .catch(next);
   },
 
   smallPic: (req, res, next) => {
-    res.send(req.url);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ err: errors.array()[0].msg });
+    }
+
+    const contact = req.params.contact;
+
+    Driver.findOne({
+      where: { contact }
+    })
+      .then(driver => {
+        if (!driver) {
+          return res.status(404).json({ err: 'User not found' });
+        }
+
+        const image = driver.picture;
+
+        if (!image) {
+          return res.status(404).json({ err: 'Image not found' });
+        }
+
+        Jimp.read(driver.picture)
+          .then(image => {
+            image.resize(100, 100);
+
+            return image.getBufferAsync(Jimp.MIME_PNG);
+          })
+          .then(buffer => res.status(200).send(buffer))
+          .catch(next);
+      })
+      .catch(next);
   }
 };
 
