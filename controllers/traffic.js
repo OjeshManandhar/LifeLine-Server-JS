@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 // packages
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -37,6 +39,32 @@ module.exports.get = {
         res.json({ traffic: traffic.toJSON() });
       })
       .catch(next);
+  },
+
+  pic: (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ err: errors.array()[0].msg });
+    }
+
+    const contact = req.params.contact;
+
+    Traffic.findOne({
+      where: { contact }
+    })
+      .then(traffic => {
+        if (!traffic) {
+          return res.status(404).json({ err: 'User not found' });
+        }
+
+        const image = traffic.picture;
+        res.status(200).send(image);
+      })
+      .catch(next);
+  },
+
+  smallPic: (req, res, next) => {
+    res.send(req.url);
   }
 };
 
@@ -140,7 +168,7 @@ module.exports.post = {
       .catch(next);
   },
 
-  tokenCheck: (req, res, next) => {
+  checkToken: (req, res, next) => {
     const token = req.headers['x-access-token'];
 
     if (!token) {
@@ -165,6 +193,42 @@ module.exports.post = {
         }
       );
     });
+  },
+
+  updatePic: (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ err: errors.array()[0].msg });
+    }
+
+    const contact = req.params.contact;
+    const image = req.file;
+
+    Traffic.findOne({
+      where: {
+        contact
+      }
+    })
+      .then(traffic => {
+        if (!traffic) {
+          return res.status(404).json({ err: 'User not found' });
+        }
+
+        fs.promises
+          .readFile('uploads/' + image.filename)
+          .then(buffer => {
+            traffic.picture = buffer;
+
+            return traffic.save();
+          })
+          .then(traffic => {
+            fs.promises.unlink('uploads/' + image.filename);
+
+            res.status(202).json({ message: 'File successfully uploaded' });
+          })
+          .catch(next);
+      })
+      .catch(next);
   }
 };
 
@@ -186,8 +250,6 @@ module.exports.put = {
         if (!traffic) {
           return res.status(404).json({ err: 'User not found' });
         }
-
-        console.log('traffic:'), traffic;
 
         const { name, email, contact } = req.body;
 

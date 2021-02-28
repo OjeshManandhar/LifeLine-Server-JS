@@ -42,8 +42,6 @@ module.exports.get = {
   },
 
   pic: (req, res, next) => {
-    console.log('Get driver pic');
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ err: errors.array()[0].msg });
