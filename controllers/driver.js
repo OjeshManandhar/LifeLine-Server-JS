@@ -175,6 +175,9 @@ module.exports.post = {
   },
 
   updatePic: (req, res, next) => {
+    console.log('Update driver pic');
+    console.dir(req.file);
+
     res.send(req.url);
   }
 };
@@ -197,8 +200,6 @@ module.exports.put = {
         if (!driver) {
           return res.status(404).json({ err: 'User not found' });
         }
-
-        console.log('driver:'), driver;
 
         const { name, driver_id, email, contact } = req.body;
 

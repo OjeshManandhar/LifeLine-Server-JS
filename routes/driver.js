@@ -5,6 +5,9 @@ const { body, param } = require('express-validator');
 // controllers
 const driverController = require('./../controllers/driver');
 
+// middleware
+const imageUpload = require('./../middleware/imageUpload');
+
 const router = express.Router();
 
 // GET
@@ -107,6 +110,7 @@ router.post(
         return true;
       })
   ],
+  imageUpload.single('file'), // File parser
   driverController.post.updatePic
 );
 
