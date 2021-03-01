@@ -13,6 +13,9 @@ const initModels = require('./database/initModels');
 const driverRouter = require('./routes/driver');
 const trafficRoutes = require('./routes/traffic');
 
+// socket
+const Socket = require('./socket');
+
 const app = express();
 
 // Request parser
@@ -47,19 +50,11 @@ sequelize
   .sync()
   .then(() => {
     const port = process.env.PORT || 5000;
+
     const server = app.listen(port, () =>
       console.log('Server started at port:', port)
     );
 
-    const io = require('socket.io')(server, {
-      cors: {
-        origin: '*'
-      }
-    });
-    io.on('connection', socket => {
-      console.log('Socketd connected:', socket.id);
-
-      socket.send('Hello client');
-    });
+    Socket.init(server);
   })
   .catch(err => console.log('Could not sync DB:', err));
