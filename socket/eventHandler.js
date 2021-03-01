@@ -1,74 +1,78 @@
 const strings = {
   operations: {
     create: 'create',
-    update: 'update',
-    delete: 'delete'
+    delete: 'delete',
+    update: 'update'
   },
   events: {
-    driverGps: 'driver_gps',
-    trafficGps: 'traffic_gps',
+    driver_gps: 'driver_gps',
+    traffic_gps: 'traffic_gps',
     obstructions: 'obstruction',
-    driverRoutes: 'driver_route'
+    driver_routes: 'driver_route'
   }
 };
 
 const socketData = {
-  driverGps: [],
-  trafficGps: [],
+  driver_gps: [],
+  traffic_gps: [],
   obstructions: [],
-  driverRoutes: []
+  driver_routes: []
 };
 
 function eventHandler(socket) {
+  // send initial data
   socket.send(socketData);
 
-  socket.on(strings.events.driverGps, data => {
+  // send initial data to request
+  socket.on('message', (undefined, callback) => callback(socketData));
+
+  socket.on(strings.events.driver_gps, data => {
     const op = data.operation;
     const gps = data.driver_gps;
 
     if (op === strings.operations.create) {
-      socketData.driverGps.push(gsp);
+      socketData.driver_gps.push(gps);
     } else if (op === strings.operations.update) {
-      socketData.driverGps = socketData.driverGps.filter(
+      socketData.driver_gps = socketData.driver_gps.filter(
         data => data.properties.contact !== gps.properties.contact
       );
 
-      socketData.driverGps.push(gps);
+      socketData.driver_gps.push(gps);
     } else if (op === strings.operations.delete) {
-      socketData.driverGps = socketData.driverGps.filter(
+      socketData.driver_gps = socketData.driver_gps.filter(
         data => data.properties.contact !== gps.properties.contact
       );
     }
 
-    socket.broadcast.emit(strings.events.driverGps, socketData.driverGps);
+    socket.broadcast.emit(strings.events.driver_gps, socketData.driver_gps);
   });
 
-  socket.on(strings.events.trafficGps, data => {
+  socket.on(strings.events.traffic_gps, data => {
     const op = data.operation;
     const gps = data.traffic_gps;
 
     if (op === strings.operations.create) {
-      socketData.trafficGps.push(gsp);
+      socketData.traffic_gps.push(gps);
     } else if (op === strings.operations.update) {
-      socketData.trafficGps = socketData.trafficGps.filter(
+      socketData.traffic_gps = socketData.traffic_gps.filter(
         data => data.properties.contact !== gps.properties.contact
       );
 
-      socketData.trafficGps.push(gps);
+      socketData.traffic_gps.push(gps);
     } else if (op === strings.operations.delete) {
-      socketData.trafficGps = socketData.trafficGps.filter(
+      socketData.traffic_gps = socketData.traffic_gps.filter(
         data => data.properties.contact !== gps.properties.contact
       );
     }
 
-    socket.broadcast.emit(strings.events.trafficGps, socketData.trafficGps);
+    socket.broadcast.emit(strings.events.traffic_gps, socketData.traffic_gps);
   });
 
   socket.on(strings.events.obstructions, data => {
     const op = data.operation;
     const obs = data.obstruction;
 
-    if (op === strings.events.create) {
+    if (op === strings.operations.create) {
       socketData.obstructions.push(obs);
     } else if (op === strings.operations.update) {
       socketData.obstructions = socketData.obstructions.filter(
@@ -77,7 +81,7 @@ function eventHandler(socket) {
           data.properties.contact !== obs.properties.contact
       );
 
-      socketData.obstructionspush(obs);
+      socketData.obstructions.push(obs);
     } else if (op === strings.operations.delete) {
       socketData.obstructions = socketData.obstructions.filter(
         data =>
@@ -89,25 +93,28 @@ function eventHandler(socket) {
     socket.emit(strings.events.obstructions, socketData.obstructions);
   });
 
-  socket.on(strings.events.driverRoutes, data => {
+  socket.on(strings.events.driver_routes, data => {
     const op = data.operation;
     const route = data.driver_route;
 
     if (op === strings.operations.create) {
-      socketData.driverRoutes.push(route);
+      socketData.driver_routes.push(route);
     } else if (op === strings.operations.update) {
-      socketData.driverRoutes = socketData.driverRoutes.filter(
+      socketData.driver_routes = socketData.driver_routes.filter(
         data => data.properties.contact !== route.properties.contact
       );
 
-      socketData.driverRoutes.push(route);
+      socketData.driver_routes.push(route);
     } else if (op === strings.operations.delete) {
-      socketData.driverRoutes = socketData.driverRoutes.filter(
+      socketData.driver_routes = socketData.driver_routes.filter(
         data => data.properties.contact !== route.properties.contact
       );
     }
 
-    socket.broadcast.emit(strings.events.driverRoutes, socketData.driverRoutes);
+    socket.broadcast.emit(
+      strings.events.driver_routes,
+      socketData.driver_routes
+    );
   });
 }
 
