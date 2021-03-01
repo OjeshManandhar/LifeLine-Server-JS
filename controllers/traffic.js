@@ -258,7 +258,10 @@ module.exports.post = {
             return traffic.save();
           })
           .then(traffic => {
-            fs.promises.unlink('uploads/' + image.filename);
+            fs.promises
+              .unlink('uploads/' + image.filename)
+              .then(success => console.log('Delete success:', success))
+              .catch(err => console.log('Delete error:', err));
 
             res.status(202).json({ message: 'File successfully uploaded' });
           })
