@@ -6,7 +6,12 @@ const sequelize = new Sequelize(
   process.env.DB_PASS,
   {
     dialect: process.env.DB_DIALECT,
-    host: process.env.DB_HOST
+    host: process.env.DB_HOST,
+    dialectOptions: {
+      ssl: {
+        rejectUnauthorized: false // very important
+      }
+    }
   }
 );
 
