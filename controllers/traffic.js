@@ -189,7 +189,7 @@ module.exports.post = {
                     token,
                     contact: traffic.contact,
                     name: traffic.name,
-                    roie: traffic.role
+                    role: traffic.role
                   });
                 }
               );
@@ -224,7 +224,7 @@ module.exports.post = {
           if (err) return next(err);
 
           res.status(200).json({
-            newToken: token
+            new_token: token
           });
         }
       );

@@ -190,7 +190,7 @@ module.exports.post = {
                     token,
                     contact: driver.contact,
                     name: driver.name,
-                    roie: driver.role
+                    role: driver.role
                   });
                 }
               );
@@ -223,7 +223,7 @@ module.exports.post = {
           if (err) return next(err);
 
           res.status(200).json({
-            newToken: token
+            new_token: token
           });
         }
       );
