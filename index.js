@@ -29,6 +29,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/', (req, res, next) => res.send('<h1>RATS Server</h1>'));
+
 // Routers
 app.use(driverRouter);
 app.use(trafficRoutes);
