@@ -14,7 +14,7 @@ class Socket {
       }
     });
 
-    this.#io.on('connection', eventHandler);
+    this.#io.on('connection', socket => eventHandler(socket, this.#io));
   }
 
   get io() {

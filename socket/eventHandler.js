@@ -19,7 +19,7 @@ const socketData = {
   driver_routes: []
 };
 
-function eventHandler(socket) {
+function eventHandler(socket, io) {
   // send initial data
   socket.send(socketData);
 
@@ -90,7 +90,7 @@ function eventHandler(socket) {
       );
     }
 
-    socket.emit(strings.events.obstructions, socketData.obstructions);
+    io.emit(strings.events.obstructions, socketData.obstructions);
   });
 
   socket.on(strings.events.driver_routes, data => {
