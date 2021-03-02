@@ -37,7 +37,7 @@ module.exports.get = {
           return res.status(404).json({ err: 'User not found' });
         }
 
-        res.json({ driver: driver.toJSON() });
+        res.json(driver.toJSON());
       })
       .catch(next);
   },
