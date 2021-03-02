@@ -18,6 +18,10 @@ class Socket {
   }
 
   get io() {
+    if (!this.#io) {
+      throw new Error('Socket is not initialised yet');
+    }
+
     return this.#io;
   }
 }
